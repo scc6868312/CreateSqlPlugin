@@ -24,6 +24,7 @@ import java.awt.event.ActionEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -381,7 +382,6 @@ public class GenerateSqlDialog extends DialogWrapper {
         String ticketDescText = processDescTextField.getText();
         String ticketIdText = processIdTextField.getText();
         String ticketUserText = processUserTextField.getText();
-        String parsedPgText = postgresqlText.replaceAll("comment.+?;\n", "");
 
         String errorMsg = "";
         if (StringUtils.isBlank(table)) {
@@ -398,7 +398,7 @@ public class GenerateSqlDialog extends DialogWrapper {
             errorMsg = "Mysql脚本不合法，请检查mysql脚本！";
         } else if (StringUtils.isBlank(oracleText) || checkSqlText(oracleText, EDbVendor.dbvoracle)) {
             errorMsg = "Oracle脚本不合法，请检查oracle脚本！";
-        } else if (StringUtils.isBlank(postgresqlText) ) {
+        } else if (StringUtils.isBlank(postgresqlText) || (!table.equals("DDL") && checkSqlText(postgresqlText, EDbVendor.dbvpostgresql))) {
             errorMsg = "Postgresql脚本不合法，请检查postgresql脚本！";
         }
 
@@ -483,7 +483,7 @@ public class GenerateSqlDialog extends DialogWrapper {
                         }
                     }
                     assert oracle != null;
-                    String oracleError = executeInDb(ORACLE_DB, DataBaseParser.parseJdbcUrlByDatasource(oracle, ORACLE_DB), oracle.getUser(), oracle.getPassword(),oracleText);
+                    String oracleError = executeInDb(ORACLE_DB, DataBaseParser.parseJdbcUrlByDatasource(oracle, ORACLE_DB), oracle.getUser(), oracle.getPassword(), oracleText);
                     if (StringUtils.isNotBlank(oracleError)) {
                         MessageDialogBuilder.YesNo error = MessageDialogBuilder.yesNo("ERROR", "执行oracle脚本到数据库出错:\n" + oracleError);
                         error.yesText("忽略并继续生成");
@@ -494,7 +494,7 @@ public class GenerateSqlDialog extends DialogWrapper {
                     }
 
                     assert postgresql != null;
-                    String pgError = executeInDb(POSTGRESQL_DB, DataBaseParser.parseJdbcUrlByDatasource(postgresql,POSTGRESQL_DB), postgresql.getUser(), postgresql.getPassword(), postgresqlText);
+                    String pgError = executeInDb(POSTGRESQL_DB, DataBaseParser.parseJdbcUrlByDatasource(postgresql, POSTGRESQL_DB), postgresql.getUser(), postgresql.getPassword(), postgresqlText);
                     if (StringUtils.isNotBlank(pgError)) {
                         MessageDialogBuilder.YesNo error = MessageDialogBuilder.yesNo("ERROR", "执行postgresql脚本到数据库出错:\n" + pgError);
                         error.yesText("忽略并继续生成");
@@ -551,8 +551,28 @@ public class GenerateSqlDialog extends DialogWrapper {
                     break;
                 case ORACLE_DB:
                     Matcher orMatch = Pattern.compile("declare[\\s\\S]+?end([\\s\\S]|);").matcher(sql);
+                    PreparedStatement prepareStatement = connection.prepareStatement("select distinct tablespace_name from dba_indexes where table_owner = '" + user.toUpperCase() + "' and rownum = 1");
+                    ResultSet resultSet = prepareStatement.executeQuery();
+                    String indexSpace = null;
+                    while (resultSet.next()) {
+                        indexSpace = resultSet.getString(1);
+                    }
+
+                    resultSet.close();
+                    prepareStatement.close();
+
+                    PreparedStatement tableStatement = connection.prepareStatement("select default_tablespace from dba_users where username='" + user.toUpperCase() + "'");
+                    ResultSet tableResult = tableStatement.executeQuery();
+                    String tableSpace = null;
+                    while (tableResult.next()) {
+                        tableSpace = tableResult.getString(1);
+                    }
+                    tableResult.close();
+                    tableStatement.close();
+
                     while (orMatch.find()) {
-                        statement = connection.prepareStatement(orMatch.group(0));
+                        String matchSql = orMatch.group(0).replaceAll("[$][{]HS_.+_DATA[}]", tableSpace).replaceAll("[$][{]HS_.+_IDX[}]", indexSpace);
+                        statement = connection.prepareStatement(matchSql);
                         statement.executeUpdate();
                         statement.close();
                     }
