@@ -46,4 +46,39 @@
             <add-to-group group-id="ProjectViewPopupMenu" anchor="first"/>
         </action>
     </actions>
+    <change-notes>
+         <![CDATA[
+          <p>
+            <ul>
+                <li>v1.0.2</li>
+                <ul>
+                    <li>版本说明</li>
+                    <li>执行sql时添加了进度条显示，方便知道执行进度</li>
+                    <li>如果您选择的表为DDL,postgresql脚本将不再做初步检查语法（检查语法工具存在bug）,请执行到数据库中一定要关注有无postgresql报错！避免易现。</li>
+                </ul>
+                 <br/>
+                <br/>
+                <li>v1.0.1</li>
+                <ul>
+                    <li>版本说明</li>
+                    <li>支持了执行您贴进来的sql到数据库中</li>
+                    <li>支持根据自定义配置加载不同的表</li>
+                    <li>自定义配置文件在 {对应微服务的根目录}/pluginConfig 目录下,表信息为table.xml,数据库配置为database.xml</li>
+                </ul>
+                <br/>
+                <br/>
+                <li>v1.0.0</li>
+                <ul>
+                    <li>版本说明</li>
+                    <li>生成sql插件新建,支持以下功能：</li>
+                    <ol>
+                        <li>检查您贴进来的sql脚本语法</li>
+                        <li>如果语法检查通过，将sql生成到您选择的表对应的sql文件中</li>
+                    </ol>
+                </ul>
+            </ul>
+            </p >
+           ]]>
+    </change-notes>
+    <version>1.0.2</version>
 </idea-plugin>

@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.scc"
-version = "1.0-11"
+version = "1.0.2"
 
 repositories {
     mavenCentral()
