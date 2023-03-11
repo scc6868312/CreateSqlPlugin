@@ -33,7 +33,7 @@ public class CreateSqlAction extends AnAction {
         }
         String configPath = path.replaceAll("/Sql/.*", "/pluginConfig/");
 
-        GenerateSqlDialog dialog = new GenerateSqlDialog(path, configPath);
+        GenerateSqlDialog dialog = new GenerateSqlDialog(path, configPath, e.getProject());
         dialog.pack();
         dialog.show();
 

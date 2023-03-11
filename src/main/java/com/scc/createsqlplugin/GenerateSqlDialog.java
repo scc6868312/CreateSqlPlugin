@@ -4,10 +4,13 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.map.multi.RowKeyTable;
 import cn.hutool.core.map.multi.Table;
 import cn.hutool.core.text.StrSplitter;
+import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.MessageDialogBuilder;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.ValidationInfo;
+import com.intellij.openapi.util.ThrowableComputable;
 import com.scc.createsqlplugin.database.DataBaseParser;
 import com.scc.createsqlplugin.database.Database;
 import com.scc.createsqlplugin.database.MySQL;
@@ -58,15 +61,18 @@ public class GenerateSqlDialog extends DialogWrapper {
 
     private Map<String, String> tableTypeMap;
 
+    private Project project;
+
     public static final String MYSQL_DB = "mysql";
     public static final String ORACLE_DB = "oracle";
     public static final String POSTGRESQL_DB = "postgresql";
 
 
-    public GenerateSqlDialog(String directoryPath, String configPath) {
+    public GenerateSqlDialog(String directoryPath, String configPath, @Nullable Project project) {
         super(true);
         this.directoryPath = directoryPath;
         this.configPath = configPath;
+        this.project = project;
         init();
         setTitle("生成sql");
         choiceTable = new RowKeyTable<>();
@@ -471,21 +477,19 @@ public class GenerateSqlDialog extends DialogWrapper {
                     Oracle oracle = database.getDatabaseList().stream().filter(baseDatabase -> baseDatabase instanceof Oracle).map(baseDatabase -> (Oracle) baseDatabase).findFirst().orElse(null);
                     Postgresql postgresql = database.getDatabaseList().stream().filter(baseDatabase -> baseDatabase instanceof Postgresql).map(baseDatabase -> (Postgresql) baseDatabase).findFirst().orElse(null);
 
-                    assert mySQL != null;
-                    String mysqlError = executeInDb(MYSQL_DB, DataBaseParser.parseJdbcUrlByDatasource(mySQL, MYSQL_DB), mySQL.getUser(), mySQL.getPassword(), mysqlText);
+                    try {
+                        ProgressManager.getInstance().runProcessWithProgressSynchronously((ThrowableComputable<String, Exception>) () -> {
 
-                    if (StringUtils.isNotBlank(mysqlError)) {
-                        MessageDialogBuilder.YesNo error = MessageDialogBuilder.yesNo("ERROR", "执行mysql脚本到数据库出错:\n" + mysqlError);
-                        error.yesText("忽略并继续生成");
-                        error.noText("退出");
-                        if (!error.isYes()) {
-                            return;
-                        }
-                    }
-                    assert oracle != null;
-                    String oracleError = executeInDb(ORACLE_DB, DataBaseParser.parseJdbcUrlByDatasource(oracle, ORACLE_DB), oracle.getUser(), oracle.getPassword(), oracleText);
-                    if (StringUtils.isNotBlank(oracleError)) {
-                        MessageDialogBuilder.YesNo error = MessageDialogBuilder.yesNo("ERROR", "执行oracle脚本到数据库出错:\n" + oracleError);
+                            assert mySQL != null;
+                            String mysqlError = executeInDb(MYSQL_DB, DataBaseParser.parseJdbcUrlByDatasource(mySQL, MYSQL_DB), mySQL.getUser(), mySQL.getPassword(), mysqlText);
+
+                            if (StringUtils.isNotBlank(mysqlError)) {
+                                throw new RuntimeException(mysqlError);
+                            }
+                            return null;
+                        }, "正在执行mysql脚本中", false, project);
+                    } catch (Exception ex) {
+                        MessageDialogBuilder.YesNo error = MessageDialogBuilder.yesNo("ERROR", "执行mysql脚本到数据库出错:\n" + ex.getMessage());
                         error.yesText("忽略并继续生成");
                         error.noText("退出");
                         if (!error.isYes()) {
@@ -493,16 +497,42 @@ public class GenerateSqlDialog extends DialogWrapper {
                         }
                     }
 
-                    assert postgresql != null;
-                    String pgError = executeInDb(POSTGRESQL_DB, DataBaseParser.parseJdbcUrlByDatasource(postgresql, POSTGRESQL_DB), postgresql.getUser(), postgresql.getPassword(), postgresqlText);
-                    if (StringUtils.isNotBlank(pgError)) {
-                        MessageDialogBuilder.YesNo error = MessageDialogBuilder.yesNo("ERROR", "执行postgresql脚本到数据库出错:\n" + pgError);
+                    try {
+                        ProgressManager.getInstance().runProcessWithProgressSynchronously((ThrowableComputable<String, Exception>) () -> {
+                            assert oracle != null;
+                            String oracleError = executeInDb(ORACLE_DB, DataBaseParser.parseJdbcUrlByDatasource(oracle, ORACLE_DB), oracle.getUser(), oracle.getPassword(), oracleText);
+                            if (StringUtils.isNotBlank(oracleError)) {
+                                throw new RuntimeException(oracleError);
+                            }
+                            return null;
+                        }, "正在执行oracle脚本中", false, project);
+                    } catch (Exception ex2) {
+                        MessageDialogBuilder.YesNo error = MessageDialogBuilder.yesNo("ERROR", "执行oracle脚本到数据库出错:\n" + ex2.getMessage());
                         error.yesText("忽略并继续生成");
                         error.noText("退出");
                         if (!error.isYes()) {
                             return;
                         }
                     }
+
+                    try {
+                        ProgressManager.getInstance().runProcessWithProgressSynchronously((ThrowableComputable<String, Exception>) () -> {
+                            assert postgresql != null;
+                            String pgError = executeInDb(POSTGRESQL_DB, DataBaseParser.parseJdbcUrlByDatasource(postgresql, POSTGRESQL_DB), postgresql.getUser(), postgresql.getPassword(), postgresqlText);
+                            if (StringUtils.isNotBlank(pgError)) {
+                                throw new RuntimeException(pgError);
+                            }
+                            return null;
+                        }, "正在执行postgresql脚本中", false, project);
+                    } catch (Exception ex3) {
+                        MessageDialogBuilder.YesNo error = MessageDialogBuilder.yesNo("ERROR", "执行postgresql脚本到数据库出错:\n" + ex3.getMessage());
+                        error.yesText("忽略并继续生成");
+                        error.noText("退出");
+                        if (!error.isYes()) {
+                            return;
+                        }
+                    }
+
 
                     putSqlToFile(mysqlText, ticketVersionText, ticketDescText, ticketIdText, ticketUserText, mysqlPath);
                     putSqlToFile(oracleText, ticketVersionText, ticketDescText, ticketIdText, ticketUserText, oraclePath);
@@ -571,6 +601,8 @@ public class GenerateSqlDialog extends DialogWrapper {
                     tableStatement.close();
 
                     while (orMatch.find()) {
+                        assert tableSpace != null;
+                        assert indexSpace != null;
                         String matchSql = orMatch.group(0).replaceAll("[$][{]HS_.+_DATA[}]", tableSpace).replaceAll("[$][{]HS_.+_IDX[}]", indexSpace);
                         statement = connection.prepareStatement(matchSql);
                         statement.executeUpdate();
