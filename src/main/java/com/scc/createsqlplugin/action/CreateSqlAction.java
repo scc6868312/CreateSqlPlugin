@@ -7,6 +7,8 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.psi.PsiDirectory;
 import com.scc.createsqlplugin.database.DataBaseParser;
 import com.scc.createsqlplugin.database.DatabaseEntity;
@@ -23,12 +25,8 @@ public class CreateSqlAction extends AnAction {
     @Override
     public void actionPerformed(AnActionEvent e) {
 
-
-        IdeView ideView = e.getRequiredData(LangDataKeys.IDE_VIEW);
-
-        PsiDirectory directory = ideView.getOrChooseDirectory();
-        String path = directory.getVirtualFile().getPath();
-
+        ToolWindow toolWindow = ToolWindowManager.getInstance(e.getProject()).getToolWindow("InvestTradeSqlTool");
+        toolWindow.show();
     }
 
 

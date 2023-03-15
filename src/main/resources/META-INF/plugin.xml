@@ -38,21 +38,21 @@
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="com.scc.createsqlplugin.window.CreateSqlWindow" id="InvestTradeWindow"
+        <toolWindow factoryClass="com.scc.createsqlplugin.window.CreateSqlWindow" id="InvestTradeSqlTool"
                     anchor="right"/>
         <toolWindow factoryClass="com.scc.createsqlplugin.window.SqlConsoleWindow" id="SqlExecuteWindow"
                     anchor="bottom"/>
         <executor implementation="com.scc.createsqlplugin.component.CustomRunExecutor" id="CustomRunExecutor"/>
-        <programRunner implementation="com.scc.createsqlplugin.runner.CurrExecuteRunner" id="currRunner" />
+        <programRunner implementation="com.scc.createsqlplugin.runner.CurrExecuteRunner" id="currRunner"/>
         <programRunner implementation="com.scc.createsqlplugin.runner.AllExecuteRunner" id="allRunner"/>
-        <programRunner implementation="com.scc.createsqlplugin.runner.CustomExecuteRunner" id="customRunner" />
+        <programRunner implementation="com.scc.createsqlplugin.runner.CustomExecuteRunner" id="customRunner"/>
     </extensions>
 
     <idea-version since-build="193.*"/>
     <actions>
         <group id="InvestTradeGroup" popup="true" text="投顾交易">
             <add-to-group group-id="ProjectViewPopupMenu" anchor="first"/>
-            <!--            <action id="createSqlAction" class="com.scc.createsqlplugin.action.CreateSqlAction" text="执行并粘贴sql" />-->
+            <action id="createSqlAction" class="com.scc.createsqlplugin.action.CreateSqlAction" text="执行并粘贴sql"/>
             <action id="executeCurrVersionAction" class="com.scc.createsqlplugin.action.ExecuteCurrVersionAction"
                     text="执行当前版本sql"/>
             <action id="executeAllAction" class="com.scc.createsqlplugin.action.ExecuteAllVersionAction"

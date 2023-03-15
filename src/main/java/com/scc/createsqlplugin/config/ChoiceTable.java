@@ -20,7 +20,7 @@ public class ChoiceTable {
 
     public static Table<Pair<String, String>, String, String> parseChoiceTable(String path) {
         Table<Pair<String, String>, String, String> table = new RowKeyTable<>();
-        Document document = XmlUtil.readXML(path + "table.xml");
+        Document document = XmlUtil.readXML(path + File.separator + "table.xml");
         Element documentElement = document.getDocumentElement();
         NodeList nodeList = documentElement.getElementsByTagName("item");
 

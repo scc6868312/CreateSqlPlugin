@@ -148,4 +148,16 @@ public class FileUtils {
         return version.replaceAll("-SNAPSHOT", StringUtils.EMPTY);
     }
 
+
+    public static String getCurrVersionPatchPath(Project project) {
+        String projectBasePath = getProjectBasePath(project);
+        if (StringUtils.isBlank(projectBasePath)) {
+            return StringUtils.EMPTY;
+        }
+        String version = getVersion(projectBasePath);
+        if (StringUtils.isBlank(version)) {
+            return StringUtils.EMPTY;
+        }
+        return projectBasePath.concat(File.separator).concat("Sql").concat(File.separator).concat("SqlPatch").concat(File.separator).concat(version);
+    }
 }

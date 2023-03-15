@@ -12,7 +12,6 @@ public class CreateSqlForm extends JDialog {
 
     private JTextField processId;
 
-    private JTextField processVersion;
 
     private JTextField processUser;
 
@@ -64,71 +63,49 @@ public class CreateSqlForm extends JDialog {
         return contentPane;
     }
 
-    public void setContentPane(JPanel contentPane) {
-        this.contentPane = contentPane;
-    }
 
     public JTextArea getMysqlText() {
         return mysqlText;
     }
 
-    public void setMysqlText(JTextArea mysqlText) {
-        this.mysqlText = mysqlText;
-    }
 
     public JComboBox<String> getTableBox() {
         return tableBox;
     }
 
-    public void setTableBox(JComboBox<String> tableBox) {
-        this.tableBox = tableBox;
-    }
 
     public JTextArea getOracleText() {
         return oracleText;
     }
 
-    public void setOracleText(JTextArea oracleText) {
-        this.oracleText = oracleText;
-    }
 
     public JTextArea getPostgreText() {
         return postgreText;
     }
 
-    public void setPostgreText(JTextArea postgreText) {
-        this.postgreText = postgreText;
-    }
 
     public JTextField getProcessId() {
         return processId;
     }
 
-    public void setProcessId(JTextField processId) {
-        this.processId = processId;
-    }
 
-    public JTextField getProcessVersion() {
-        return processVersion;
-    }
-
-    public void setProcessVersion(JTextField processVersion) {
-        this.processVersion = processVersion;
-    }
 
     public JTextField getProcessUser() {
         return processUser;
     }
 
-    public void setProcessUser(JTextField processUser) {
-        this.processUser = processUser;
-    }
+
 
     public JTextField getProcessDesc() {
         return processDesc;
     }
 
-    public void setProcessDesc(JTextField processDesc) {
-        this.processDesc = processDesc;
+
+    public JButton getButtonOK() {
+        return buttonOK;
+    }
+
+    public JButton getButtonCancel() {
+        return buttonCancel;
     }
 }

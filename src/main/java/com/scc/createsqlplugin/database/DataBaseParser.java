@@ -7,7 +7,8 @@ import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.InputStream;
 
-import static com.scc.createsqlplugin.window.GenerateSqlDialog.*;
+import static com.scc.createsqlplugin.constant.Constant.*;
+
 
 /**
  * @author: scc
