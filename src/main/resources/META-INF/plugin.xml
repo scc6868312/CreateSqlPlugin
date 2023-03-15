@@ -14,21 +14,22 @@
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description>中文:鸡你太美。
-英文:chicken you're so beautiful.
-日语:チキン、あなたはとても美しいです。
-韩语:치킨, 너 너무 아름다워.
-法语:Poulet, tu es tellement belle.
-俄语:Цыпленок, ты такой красивый.
-德语:Huhn, du bist so schön.
-意大利语:Pollo, sei così bello.
-阿拉伯语:الدجاج ، أنت جميلة جدا.
-波斯语:مرغ، خیلی زیبا هستی
-缅甸语:ကြက်သားသင်တို့သည်ဤမျှလှပသောဖြစ်ပါတယ်
-泰语:ไก่คุณสวยมาก
-芬兰语:ไก่คุณสวยมาก
-印地语:चिकन, आप बहुत सुंदर हैं।
-冰岛语:Kjúklingur, þú ert svo falleg.
-世界语:Kokido, vi estas tiel bela.</description>
+        英文:chicken you're so beautiful.
+        日语:チキン、あなたはとても美しいです。
+        韩语:치킨, 너 너무 아름다워.
+        法语:Poulet, tu es tellement belle.
+        俄语:Цыпленок, ты такой красивый.
+        德语:Huhn, du bist so schön.
+        意大利语:Pollo, sei così bello.
+        阿拉伯语:الدجاج ، أنت جميلة جدا.
+        波斯语:مرغ، خیلی زیبا هستی
+        缅甸语:ကြက်သားသင်တို့သည်ဤမျှလှပသောဖြစ်ပါတယ်
+        泰语:ไก่คุณสวยมาก
+        芬兰语:ไก่คุณสวยมาก
+        印地语:चिकन, आप बहुत सुंदर हैं।
+        冰岛语:Kjúklingur, þú ert svo falleg.
+        世界语:Kokido, vi estas tiel bela.
+    </description>
 
     <!-- Product and plugin compatibility requirements.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
@@ -37,17 +38,32 @@
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
-    
+        <toolWindow factoryClass="com.scc.createsqlplugin.window.CreateSqlWindow" id="InvestTradeWindow"
+                    anchor="right"/>
+        <toolWindow factoryClass="com.scc.createsqlplugin.window.SqlConsoleWindow" id="SqlExecuteWindow"
+                    anchor="bottom"/>
+        <executor implementation="com.scc.createsqlplugin.component.CustomRunExecutor" id="CustomRunExecutor"/>
+        <programRunner implementation="com.scc.createsqlplugin.runner.CurrExecuteRunner" id="currRunner" />
+        <programRunner implementation="com.scc.createsqlplugin.runner.AllExecuteRunner" id="allRunner"/>
+        <programRunner implementation="com.scc.createsqlplugin.runner.CustomExecuteRunner" id="customRunner" />
     </extensions>
-    
-    <idea-version since-build="201.*"/>
+
+    <idea-version since-build="193.*"/>
     <actions>
-        <action id="createSqlAction" class="com.scc.createsqlplugin.CreateSqlAction" text="生成sql">
+        <group id="InvestTradeGroup" popup="true" text="投顾交易">
             <add-to-group group-id="ProjectViewPopupMenu" anchor="first"/>
-        </action>
+            <!--            <action id="createSqlAction" class="com.scc.createsqlplugin.action.CreateSqlAction" text="执行并粘贴sql" />-->
+            <action id="executeCurrVersionAction" class="com.scc.createsqlplugin.action.ExecuteCurrVersionAction"
+                    text="执行当前版本sql"/>
+            <action id="executeAllAction" class="com.scc.createsqlplugin.action.ExecuteAllVersionAction"
+                    text="执行全部sql"/>
+            <action id="executeCurrPathAction" class="com.scc.createsqlplugin.action.ExecuteCurrPathAction"
+                    text="执行指定sql"/>
+        </group>
+
     </actions>
     <change-notes>
-         <![CDATA[
+        <![CDATA[
           <p>
             <ul>
                 <li>v1.0.2</li>
@@ -77,5 +93,4 @@
             </p >
            ]]>
     </change-notes>
-    <version>1.0.2</version>
 </idea-plugin>

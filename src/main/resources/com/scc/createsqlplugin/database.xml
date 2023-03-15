@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databases>
+    <database type="omc">
+        <mysql user="hs_omc_sql" password="hundsun"  host="10.20.29.35" port="3306" database="hs_omc_sql"/>
+        <oracle user="hs_omc_sql" password="hundsun"  host="10.20.44.131" port="1521" serviceName="orcl"/>
+        <postgresql user="hsomc" password="caifu@123"  host="10.20.29.37" port="5432" database="hs_omc_data"/>
+    </database>
+    <database type="iot">
+        <mysql user="hs_iot_test" password="123456"  host="10.20.29.35" port="3306" database="hs_iot_test"/>
+        <oracle user="hs_its" password="hundsun"  host="10.20.44.131" port="1521" serviceName="orcl"/>
+        <postgresql user="hsiot" password="caifu@123"  host="10.20.29.37" port="5432" database="hs_iot_data"/>
+    </database>
+    <database type="ims">
+        <mysql user="hs_its_test" password="123456"  host="10.20.29.35" port="3306" database="hs_its_test"/>
+        <oracle user="hs_its" password="hundsun"  host="10.20.44.131" port="1521" serviceName="orcl"/>
+        <postgresql user="hsits" password="caifu@123"  host="10.20.29.37" port="5432" database="hs_its_data"/>
+    </database>
+</databases>

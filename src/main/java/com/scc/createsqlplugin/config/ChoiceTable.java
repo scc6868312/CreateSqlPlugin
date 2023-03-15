@@ -1,4 +1,4 @@
-package com.scc.createsqlplugin;
+package com.scc.createsqlplugin.config;
 
 import cn.hutool.core.lang.Pair;
 import cn.hutool.core.map.multi.RowKeyTable;

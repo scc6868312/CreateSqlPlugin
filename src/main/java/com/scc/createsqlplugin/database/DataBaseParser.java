@@ -1,15 +1,13 @@
 package com.scc.createsqlplugin.database;
 
-import cn.hutool.core.util.XmlUtil;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import cn.hutool.core.io.FileUtil;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+import java.io.File;
+import java.io.InputStream;
 
-import static com.scc.createsqlplugin.GenerateSqlDialog.*;
+import static com.scc.createsqlplugin.window.GenerateSqlDialog.*;
 
 /**
  * @author: scc
@@ -19,63 +17,21 @@ import static com.scc.createsqlplugin.GenerateSqlDialog.*;
 public class DataBaseParser {
 
     public static DatabaseEntity parseDatabase(String path) {
-        DatabaseEntity entity = new DatabaseEntity();
 
-        entity.setDatabases(new ArrayList<>());
-        Document document = XmlUtil.readXML(path + "database.xml");
-        Element documentElement = document.getDocumentElement();
-        NodeList nodeList = documentElement.getElementsByTagName("database");
-        for (int i = 0; i < nodeList.getLength(); i++) {
-            Node node = nodeList.item(i);
-            putAttribute(entity.getDatabases(), node);
+        try (InputStream input = FileUtil.getInputStream(path + File.separator + "database.xml")) {
+            JAXBContext jaxbContext = JAXBContext.newInstance(DatabaseEntity.class);
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            DatabaseEntity databaseEntity = (DatabaseEntity) unmarshaller.unmarshal(input);
+            System.out.println(databaseEntity.toString());
+            return databaseEntity;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return entity;
-    }
-
-    private static void putAttribute(List<Database> databases, Node node) {
-        Database database = new Database();
-        List<BaseDatabase> dbList = new ArrayList<>();
-        Element element = (Element) node;
-        String type = element.getAttribute("type");
-        database.setType(type);
-        NodeList childNodes = element.getChildNodes();
-        for (int i = 0; i < childNodes.getLength(); i++) {
-            Node item = childNodes.item(i);
-            String dbType = item.getNodeName();
-            BaseDatabase baseDatabase = null;
-            switch (dbType) {
-                case MYSQL_DB:
-                    MySQL mySQL = new MySQL();
-                    mySQL.setDatabase(((Element) item).getAttribute("database"));
-                    baseDatabase = mySQL;
-                    break;
-                case ORACLE_DB:
-                    Oracle oracle = new Oracle();
-                    oracle.setServiceName(((Element) item).getAttribute("serviceName"));
-                    baseDatabase = oracle;
-                    break;
-                case POSTGRESQL_DB:
-                    Postgresql postgresql = new Postgresql();
-                    postgresql.setDatabase(((Element) item).getAttribute("database"));
-                    baseDatabase = postgresql;
-                    break;
-                default:
-                    continue;
-            }
-            baseDatabase.setHost(((Element) item).getAttribute("host"));
-            baseDatabase.setPort(((Element) item).getAttribute("port"));
-            baseDatabase.setUser(((Element) item).getAttribute("user"));
-            baseDatabase.setPassword(((Element) item).getAttribute("password"));
-            dbList.add(baseDatabase);
-        }
-        database.setDatabaseList(dbList);
-        databases.add(database);
-
     }
 
     public static Database findDatabase(String path, String type) {
         DatabaseEntity databaseEntity = parseDatabase(path);
-        return databaseEntity.getDatabases().stream().filter(database -> database.getType().equalsIgnoreCase(type)).findFirst().orElseThrow(() -> new RuntimeException("Could not find database"));
+        return databaseEntity.getDatabaseList().stream().filter(database -> database.getType().equalsIgnoreCase(type)).findFirst().orElseThrow(() -> new RuntimeException("Could not find database"));
     }
 
 

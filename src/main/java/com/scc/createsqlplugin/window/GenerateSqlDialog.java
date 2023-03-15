@@ -1,4 +1,4 @@
-package com.scc.createsqlplugin;
+package com.scc.createsqlplugin.window;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.map.multi.RowKeyTable;
@@ -11,6 +11,9 @@ import com.intellij.openapi.ui.MessageDialogBuilder;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.ValidationInfo;
 import com.intellij.openapi.util.ThrowableComputable;
+import com.scc.createsqlplugin.config.ChoiceTable;
+import com.scc.createsqlplugin.config.DbDriver;
+import com.scc.createsqlplugin.component.CreateSqlForm;
 import com.scc.createsqlplugin.database.DataBaseParser;
 import com.scc.createsqlplugin.database.Database;
 import com.scc.createsqlplugin.database.MySQL;
@@ -359,16 +362,16 @@ public class GenerateSqlDialog extends DialogWrapper {
         postgresqlTextGrid.setIndent(0);
         postgresqlTextGrid.setUseParentLayout(false);
         panel.add(postgresqlScrollPane, postgresqlTextGrid);*/
-        CreateDialog createDialog = new CreateDialog();
-        this.tableComboBox = createDialog.getTableBox();
-        this.mysqlTextArea = createDialog.getMysqlText();
-        this.oracleTextArea = createDialog.getOracleText();
-        this.postgresqlTextArea = createDialog.getPostgreText();
-        this.processIdTextField = createDialog.getProcessId();
-        this.processVersionTextField = createDialog.getProcessVersion();
-        this.processDescTextField = createDialog.getProcessDesc();
-        this.processUserTextField = createDialog.getProcessUser();
-        return createDialog.getContentPane();
+        CreateSqlForm createSqlForm = new CreateSqlForm();
+        this.tableComboBox = createSqlForm.getTableBox();
+        this.mysqlTextArea = createSqlForm.getMysqlText();
+        this.oracleTextArea = createSqlForm.getOracleText();
+        this.postgresqlTextArea = createSqlForm.getPostgreText();
+        this.processIdTextField = createSqlForm.getProcessId();
+        this.processVersionTextField = createSqlForm.getProcessVersion();
+        this.processDescTextField = createSqlForm.getProcessDesc();
+        this.processUserTextField = createSqlForm.getProcessUser();
+        return createSqlForm.getContentPane();
 
     }
 
@@ -473,9 +476,9 @@ public class GenerateSqlDialog extends DialogWrapper {
 
                     String tableType = tableTypeMap.get(table);
                     Database database = DataBaseParser.findDatabase(configPath, tableType);
-                    MySQL mySQL = database.getDatabaseList().stream().filter(baseDatabase -> baseDatabase instanceof MySQL).map(baseDatabase -> (MySQL) baseDatabase).findFirst().orElse(null);
-                    Oracle oracle = database.getDatabaseList().stream().filter(baseDatabase -> baseDatabase instanceof Oracle).map(baseDatabase -> (Oracle) baseDatabase).findFirst().orElse(null);
-                    Postgresql postgresql = database.getDatabaseList().stream().filter(baseDatabase -> baseDatabase instanceof Postgresql).map(baseDatabase -> (Postgresql) baseDatabase).findFirst().orElse(null);
+                    MySQL mySQL = database.getMySQL();
+                    Oracle oracle = database.getOracle();
+                    Postgresql postgresql = database.getPostgresql();
 
                     try {
                         ProgressManager.getInstance().runProcessWithProgressSynchronously((ThrowableComputable<String, Exception>) () -> {

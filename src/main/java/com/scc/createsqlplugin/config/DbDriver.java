@@ -1,4 +1,4 @@
-package com.scc.createsqlplugin;
+package com.scc.createsqlplugin.config;
 
 /**
  * @author: scc

@@ -4,10 +4,11 @@ plugins {
 }
 
 group = "com.scc"
-version = "1.0.2"
+version = "1.0.3"
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 
@@ -17,6 +18,7 @@ dependencies {
     implementation("mysql:mysql-connector-java:8.0.32")
     implementation("com.oracle.database.jdbc:ojdbc10:19.18.0.0")
     implementation("org.postgresql:postgresql:42.5.4")
+    implementation("com.jcraft:jsch:0.1.55")
 }
 
 // Configure Gradle IntelliJ Plugin
