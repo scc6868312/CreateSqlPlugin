@@ -29,9 +29,6 @@
         <toolWindow factoryClass="com.scc.createsqlplugin.window.SqlConsoleWindow" id="SqlExecuteWindow"
                     anchor="bottom"/>
         <executor implementation="com.scc.createsqlplugin.component.CustomRunExecutor" id="CustomRunExecutor"/>
-        <programRunner implementation="com.scc.createsqlplugin.runner.CurrExecuteRunner" id="currRunner"/>
-        <programRunner implementation="com.scc.createsqlplugin.runner.AllExecuteRunner" id="allRunner"/>
-        <programRunner implementation="com.scc.createsqlplugin.runner.CustomExecuteRunner" id="customRunner"/>
     </extensions>
 
     <idea-version since-build="193.*"/>

@@ -17,6 +17,7 @@ import com.scc.createsqlplugin.component.CustomRunExecutor;
 import com.scc.createsqlplugin.constant.ExecutorRegistry;
 import com.scc.createsqlplugin.executesql.SqlScriptController;
 import com.scc.createsqlplugin.runner.AbstractExecuteRunner;
+import com.scc.createsqlplugin.runner.AllExecuteRunner;
 import com.scc.createsqlplugin.util.ConfigUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -46,8 +47,7 @@ public class ExecuteAllVersionAction extends AnAction {
         // 设置restart和stop
         customExecutor.withReturn(() -> runExecutor(project, path))
                 .withStop(() -> ConfigUtil.setRunning(project, false), () -> ConfigUtil.getRunning(project));
-        AbstractExecuteRunner abstractExecuteRunner = (AbstractExecuteRunner) ProgramRunner.findRunnerById("allRunner");
-        assert abstractExecuteRunner != null;
+        AbstractExecuteRunner abstractExecuteRunner = new AllExecuteRunner();
         abstractExecuteRunner.setRunFunction(consoleView -> SqlScriptController.runAllVersionScripts(path, consoleView));
         Executor executor = CustomRunExecutor.getRunExecutorInstance();
         if (executor == null) {

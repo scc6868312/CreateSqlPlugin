@@ -17,6 +17,7 @@ import com.scc.createsqlplugin.component.CustomRunExecutor;
 import com.scc.createsqlplugin.constant.ExecutorRegistry;
 import com.scc.createsqlplugin.executesql.SqlScriptController;
 import com.scc.createsqlplugin.runner.AbstractExecuteRunner;
+import com.scc.createsqlplugin.runner.CustomExecuteRunner;
 import com.scc.createsqlplugin.util.ConfigUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -46,8 +47,7 @@ public class ExecuteCurrPathAction extends AnAction {
         // 设置restart和stop
         customExecutor.withReturn(() -> runExecutor(project, path))
                 .withStop(() -> ConfigUtil.setRunning(project, false), () -> ConfigUtil.getRunning(project));
-        AbstractExecuteRunner abstractExecuteRunner = (AbstractExecuteRunner) ProgramRunner.findRunnerById("customRunner");
-        assert abstractExecuteRunner != null;
+        AbstractExecuteRunner abstractExecuteRunner = new CustomExecuteRunner();
         abstractExecuteRunner.setRunFunction(consoleView -> SqlScriptController.runAssignableFileScripts(path, consoleView));
         Executor executor = CustomRunExecutor.getRunExecutorInstance();
         if (executor == null) {
