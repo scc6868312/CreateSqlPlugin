@@ -107,7 +107,7 @@ public class FileUtils {
         if (project == null) {
             return StringUtils.EMPTY;
         }
-        return project.getBasePath();
+        return getProjectBasePath(project.getBasePath());
     }
 
     /**

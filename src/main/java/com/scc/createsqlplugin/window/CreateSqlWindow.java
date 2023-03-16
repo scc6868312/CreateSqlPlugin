@@ -85,7 +85,7 @@ public class CreateSqlWindow implements ToolWindowFactory {
         toolWindow.getContentManager().addContent(content);
 
 
-        String basePath = project.getBasePath();
+        String basePath = FileUtils.getProjectBasePath(project);
         assert basePath != null;
         String configPath = basePath.concat(File.separator).concat("pluginConfig");
 
