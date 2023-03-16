@@ -136,13 +136,13 @@ public class SqlScriptController {
                 String executeUser = dataBaseEntry.getType();
 
                 List<File> mysqlList = runSqlCallBack.getFileList("mysql", executeUser);
-                executeFile(fileDbNotes, ip, port, userName, passWord, scriptDir, dataBaseEntry.getMySQL(), mysqlList, "mysql", consoleView);
+                executeFile(fileDbNotes, ip, port, userName, passWord, scriptDir, dataBaseEntry.getMySQL(), mysqlList, executeUser,"mysql", consoleView);
 
                 List<File> oracleList = runSqlCallBack.getFileList("oracle", executeUser);
-                executeFile(fileDbNotes, ip, port, userName, passWord, scriptDir, dataBaseEntry.getOracle(), oracleList, "oracle", consoleView);
+                executeFile(fileDbNotes, ip, port, userName, passWord, scriptDir, dataBaseEntry.getOracle(), oracleList, executeUser, "oracle", consoleView);
 
                 List<File> postgresqlList = runSqlCallBack.getFileList("postgresql", executeUser);
-                executeFile(fileDbNotes, ip, port, userName, passWord, scriptDir, dataBaseEntry.getPostgresql(), postgresqlList, "postgresql", consoleView);
+                executeFile(fileDbNotes, ip, port, userName, passWord, scriptDir, dataBaseEntry.getPostgresql(), postgresqlList, executeUser, "postgresql", consoleView);
             }
         } catch (Exception e) {
             consoleView.print(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")) + "|- 执行sql时出现错误:" + e.getMessage() + "\n" + Arrays.stream(e.getStackTrace()).map(stackTraceElement -> "            " + stackTraceElement.toString()).collect(Collectors.joining("\n")), ConsoleViewContentType.LOG_ERROR_OUTPUT);
@@ -152,9 +152,9 @@ public class SqlScriptController {
         return true;
     }
 
-    private static void executeFile(Map<String, Map<String, List<String>>> fileDbNotes, String ip, String port, String userName, String passWord, String scriptDir, BaseDatabase dataBaseEntry, List<File> fileList, String dbType, ConsoleView consoleView) throws Exception {
+    private static void executeFile(Map<String, Map<String, List<String>>> fileDbNotes, String ip, String port, String userName, String passWord, String scriptDir, BaseDatabase dataBaseEntry, List<File> fileList, String executeUser, String dbType, ConsoleView consoleView) throws Exception {
         if (CollectionUtils.isEmpty(fileList)) {
-            consoleView.print(String.format("数据库：%s，没有可执行的脚本，请检查，若没问题可忽略\n", dbType), ConsoleViewContentType.LOG_WARNING_OUTPUT);
+            consoleView.print(String.format("服务类型：%s，数据库类型：%s，没有可执行的脚本，请检查，若没问题可忽略\n", executeUser, dbType), ConsoleViewContentType.LOG_WARNING_OUTPUT);
             return;
         }
         // 连接服务器
