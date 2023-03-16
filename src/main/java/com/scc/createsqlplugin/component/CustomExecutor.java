@@ -1,5 +1,6 @@
 package com.scc.createsqlplugin.component;
 
+import com.intellij.execution.DefaultExecutionResult;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.ExecutionManager;
 import com.intellij.execution.ExecutionResult;
@@ -48,7 +49,6 @@ public class CustomExecutor implements Disposable {
 
     private Computable<Boolean> stopEnabled;
 
-    private Function<ConsoleView, Boolean> runner;
 
     public CustomExecutor withReturn(Runnable returnAction) {
         this.rerunAction = returnAction;
@@ -58,12 +58,6 @@ public class CustomExecutor implements Disposable {
     public CustomExecutor withStop(Runnable stopAction, Computable<Boolean> stopEnabled) {
         this.stopAction = stopAction;
         this.stopEnabled = stopEnabled;
-        return this;
-    }
-
-
-    public CustomExecutor withRunner(Function<ConsoleView, Boolean> runner) {
-        this.runner = runner;
         return this;
     }
 
@@ -118,42 +112,7 @@ public class CustomExecutor implements Disposable {
             public Icon getIcon() {
                 return null;
             }
-        }, new ExecutionResult() {
-            @Override
-            public ExecutionConsole getExecutionConsole() {
-                return consoleView;
-            }
-
-            @Override
-            public AnAction @NotNull [] getActions() {
-                return new AnAction[0];
-            }
-
-            @Override
-            public ProcessHandler getProcessHandler() {
-                return new ProcessHandler() {
-                    @Override
-                    protected void destroyProcessImpl() {
-
-                    }
-
-                    @Override
-                    protected void detachProcessImpl() {
-
-                    }
-
-                    @Override
-                    public boolean detachIsDefault() {
-                        return false;
-                    }
-
-                    @Override
-                    public @Nullable OutputStream getProcessInput() {
-                        return null;
-                    }
-                };
-            }
-        }, layoutUi);
+        }, new DefaultExecutionResult(), layoutUi);
         descriptor.setExecutionId(System.nanoTime());
 
         final Content content = layoutUi.createContent("contentId", consolePanel, "", AllIcons.Debugger.Console, consolePanel);

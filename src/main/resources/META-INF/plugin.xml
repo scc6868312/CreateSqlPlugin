@@ -5,7 +5,7 @@
 
     <!-- Public plugin name should be written in Title Case.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
-    <name>CreateSqlPlugin</name>
+    <name>InvestTradeSqlPlugin</name>
 
     <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
     <vendor email="shicc44327@hundsun.com" url="https://www.hundsun.com">hundsun</vendor>
@@ -13,22 +13,8 @@
     <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
-    <description>中文:鸡你太美。
-        英文:chicken you're so beautiful.
-        日语:チキン、あなたはとても美しいです。
-        韩语:치킨, 너 너무 아름다워.
-        法语:Poulet, tu es tellement belle.
-        俄语:Цыпленок, ты такой красивый.
-        德语:Huhn, du bist so schön.
-        意大利语:Pollo, sei così bello.
-        阿拉伯语:الدجاج ، أنت جميلة جدا.
-        波斯语:مرغ، خیلی زیبا هستی
-        缅甸语:ကြက်သားသင်တို့သည်ဤမျှလှပသောဖြစ်ပါတယ်
-        泰语:ไก่คุณสวยมาก
-        芬兰语:ไก่คุณสวยมาก
-        印地语:चिकन, आप बहुत सुंदर हैं।
-        冰岛语:Kjúklingur, þú ert svo falleg.
-        世界语:Kokido, vi estas tiel bela.
+    <description>
+        投顾交易脚本工具。支持在当前项目执行全部和当前版本和指定路径下的sql，支持将一键生成的sql粘贴到对应的脚本文件里，并执行sql到对应的数据库中。
     </description>
 
     <!-- Product and plugin compatibility requirements.
@@ -66,6 +52,15 @@
         <![CDATA[
           <p>
             <ul>
+                <li>v1.0.3</li>
+                <ul>
+                    <li>对话框改到了工具栏里，名称为InvestTradeSqlTool，在idea右侧</li>
+                    <li>添加执行当前版本sql选项</li>
+                    <li>添加执行全部sql选项</li>
+                    <li>添加执行指定sql选项</li>
+                </ul>
+                 <br/>
+                <br/>
                 <li>v1.0.2</li>
                 <ul>
                     <li>执行sql时添加了进度条显示，方便知道执行进度</li>

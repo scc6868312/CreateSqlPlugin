@@ -14,6 +14,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDirectory;
 import com.scc.createsqlplugin.component.CustomExecutor;
 import com.scc.createsqlplugin.component.CustomRunExecutor;
+import com.scc.createsqlplugin.constant.ExecutorRegistry;
 import com.scc.createsqlplugin.executesql.SqlScriptController;
 import com.scc.createsqlplugin.runner.AbstractExecuteRunner;
 import com.scc.createsqlplugin.util.ConfigUtil;
@@ -41,7 +42,7 @@ public class ExecuteCurrVersionAction extends AnAction {
 
 
     public void runExecutor(Project project, String path) {
-        CustomExecutor customExecutor = new CustomExecutor(project);
+        CustomExecutor customExecutor = ExecutorRegistry.getExecutor(project);
         // 设置restart和stop
         customExecutor.withReturn(() -> runExecutor(project, path))
                 .withStop(() -> ConfigUtil.setRunning(project, false), () -> ConfigUtil.getRunning(project));

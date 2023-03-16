@@ -85,7 +85,7 @@ public class CreateSqlWindow implements ToolWindowFactory {
         toolWindow.getContentManager().addContent(content);
 
 
-        String basePath = toolWindow.getProject().getBasePath();
+        String basePath = project.getBasePath();
         assert basePath != null;
         String configPath = basePath.concat(File.separator).concat("pluginConfig");
 
@@ -96,7 +96,8 @@ public class CreateSqlWindow implements ToolWindowFactory {
             tableTypeMap.put(table.getRowKey().getKey(), table.getRowKey().getValue());
         });
         choiceTable.rowKeySet().forEach(tableBox::addItem);
-        buttonOK.addActionListener(e -> onOK(configPath, choiceTable, tableTypeMap, toolWindow.getProject()));
+        tableBox.setSelectedIndex(-1);
+        buttonOK.addActionListener(e -> onOK(configPath, choiceTable, tableTypeMap, project));
         buttonCancel.addActionListener(e -> onCancel(configPath));
     }
 
@@ -120,7 +121,7 @@ public class CreateSqlWindow implements ToolWindowFactory {
         this.processId.setText("");
         this.processUser.setText("");
         this.processDesc.setText("");
-        this.tableBox.setSelectedIndex(0);
+        this.tableBox.setSelectedIndex(-1);
         Messages.showInfoMessage("重置成功", "SUCCESS");
     }
 
@@ -219,7 +220,7 @@ public class CreateSqlWindow implements ToolWindowFactory {
                 this.processId.setText("");
                 this.processUser.setText("");
                 this.processDesc.setText("");
-                this.tableBox.setSelectedIndex(0);
+                this.tableBox.setSelectedIndex(-1);
             }
 
 
